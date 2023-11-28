@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form|bootstrap }}
+
+        <!-- object está sempre disponível com o registro em edição  -->
+
+        <button type="submit" class="btn btn-primary">Salvar</button>
+
+        {% if object %}
+            <a href="{% url 'delete_hora_extra' object.id %}" class="btn btn-danger">Deletar</a>
+        {% endif %}
+
+        <a href="{% url 'list_hora_extra' %}" class="btn btn-secondary">Voltar</a>
+    </form>
+    <br>
+
+{% endblock %}
