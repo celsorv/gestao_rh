@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block main %}
+	Banco de Horas <br>
+	{% for registro_he in object_list %}
+        {{ registro_he }}
+
+		<br>
+	{% endfor %}
+
+{% endblock %}

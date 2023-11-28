@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load bootstrap %}
+
+{% block main %}
+
+<!-- Funcionário: {{ object }} -->
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form|bootstrap }}
+
+        <button type="submit" class="btn btn-main">Salvar</button>
+    </form>
+    <br>
+    <a href="{% url 'create_documento' object.id %}" class="btn btn-success">
+        Adicionar Documento
+    </a>
+
+    <!-- object representa o model em edição, no caso, o funcionário -->
+    <!-- object.documento_set.all é o recurso objetos relacionados -->
+
+    <br><br>
+    Documentos:
+    <br>
+    {% for documento in object.documento_set.all %}
+        <a href="{{ documento.arquivo.url }} "> {{ documento }} </a> <br>
+    {% endfor %}
+
+{% endblock %}
