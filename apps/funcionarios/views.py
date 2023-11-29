@@ -26,6 +26,10 @@ class FuncionarioEdit(UpdateView):
     model = Funcionario
     fields = ['nome', 'departamentos']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["origem"] = "funcionario"
+        return context
 
 class FuncionarioDelete(DeleteView):
     model = Funcionario

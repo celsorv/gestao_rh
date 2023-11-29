@@ -16,7 +16,9 @@
             <a href="{% url 'delete_hora_extra' object.id %}" class="btn btn-danger">Deletar</a>
         {% endif %}
 
-        <a href="{% url 'list_hora_extra' %}" class="btn btn-secondary">Voltar</a>
+        <!-- <a href="{% url 'list_hora_extra' %}" class="btn btn-secondary">Voltar</a> -->
+
+        <a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>
     </form>
     <br>
 
