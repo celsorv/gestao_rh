@@ -87,6 +87,10 @@ def create_pdf(funcionarios):
                                       funcionario.total_horas_extras)
                      )
 
+    # Adicione número da página
+    page_number_text = "Página %d" % p.getPageNumber()
+    p.drawRightString(end_x - 10, 30, page_number_text)
+
     p.save()
 
     pdf_data = buffer.getvalue()
@@ -96,7 +100,13 @@ def create_pdf(funcionarios):
 
 
 def relatorio_funcionarios(request):
-    funcionarios = Funcionario.objects.all()
+
+    if (hasattr(request.user, 'funcionario')
+            and request.user.funcionario is not None):
+        empresa_logada = request.user.funcionario.empresa
+        funcionarios = Funcionario.objects.filter(empresa=empresa_logada)
+    else:
+        funcionarios = Funcionario.objects.none()
 
     response = HttpResponse(content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="mypdf.pdf"'
