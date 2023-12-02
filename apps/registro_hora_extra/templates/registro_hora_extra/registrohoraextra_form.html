@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap %}
 
 {% block main %}
@@ -10,6 +11,7 @@
 
         <!-- object está sempre disponível com o registro em edição  -->
 
+        <br>
         <button type="submit" class="btn btn-primary">Salvar</button>
 
         {% if object %}
@@ -19,7 +21,28 @@
         <!-- <a href="{% url 'list_hora_extra' %}" class="btn btn-secondary">Voltar</a> -->
 
         <a href="javascript:history.back()" class="btn btn-secondary">Voltar</a>
-    </form>
-    <br>
 
+        {% if object %}
+            <button onclick="utilizouHoraExtra({{ object.id }})" class="btn btn-info" type="button">
+                Marcar como utilizada
+            </button>
+            <button onclick="naoUtilizouHoraExtra({{ object.id }})" class="btn btn-info" type="button">
+                Marcar como não utilizada
+            </button>
+            <br>
+            <p id="mensagem"></p>
+        {% endif %}
+
+    </form>
+
+    {% if object %}
+        <!-- Atualizado via Ajax ao marcar para utilizar horas extras -->
+        <h4 id="horas_atualizadas">{{ object.funcionario.total_horas_extras }}</h4>
+    {% endif %}
+
+{% endblock %}
+
+{% block static %}
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/funcoes-ajax.js' %}"></script>
 {% endblock %}
