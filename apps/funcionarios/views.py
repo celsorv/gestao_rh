@@ -2,7 +2,9 @@ from io import BytesIO
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (
     ListView,
     UpdateView,
@@ -11,6 +13,7 @@ from django.views.generic import (
 )
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from xhtml2pdf import pisa
 
 from .models import Funcionario
 
@@ -64,6 +67,44 @@ class FuncionarioNovo(CreateView):
         return super(FuncionarioNovo, self).form_valid(form)
 
 
+class Render:
+    """ Cria um pdf a partir de um template HTML utilizando xhtml2pdf """
+
+    @staticmethod
+    def render(path: str, params: dict, filename: str):
+        template = get_template(path)
+        html = template.render(params)
+        response = BytesIO()
+
+        pdf = pisa.pisaDocument(
+            BytesIO(html.encode("UTF-8")), response
+        )
+
+        if pdf.err:
+            return HttpResponse("Error Rendering PDF", status=400)
+
+        response = HttpResponse(
+            response.getvalue(), content_type="application/pdf"
+        )
+
+        response["Content-Disposition"] = (
+                "attachment; filename=%s.pdf" % filename
+        )
+
+        return response
+
+
+# Exemplificando uso de Class-Based Views (CBV)
+class Pdf(View):
+    def get(self, request):
+        params = {
+            "today": "Variável today",
+            "sales": "Variável sales",
+            "request": request,
+        }
+        return Render.render("funcionarios/relatorio.html", params, "myfile")
+
+
 def create_pdf(funcionarios):
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -99,8 +140,8 @@ def create_pdf(funcionarios):
     return pdf_data
 
 
+# Exemplificando uso de Function-Based View (FBV)
 def relatorio_funcionarios(request):
-
     if (hasattr(request.user, 'funcionario')
             and request.user.funcionario is not None):
         empresa_logada = request.user.funcionario.empresa
@@ -127,7 +168,7 @@ def relatorio_funcionarios(request):
 #     # Content-Disposition garante faz com que o arquivo seja baixado
 #     response["Content-Disposition"] = 'attachment; filename="mypdf.pdf"'
 #
-#     buffer = io.BytesIO()
+#     buffer = BytesIO()
 #     p = canvas.Canvas(buffer)
 #
 #     p.drawString(10, 810, "Hello world.")
@@ -157,7 +198,7 @@ def relatorio_funcionarios(request):
 #     # Content-Disposition garante faz com que o arquivo seja baixado
 #     response["Content-Disposition"] = 'attachment; filename="mypdf.pdf"'
 #
-#     buffer = io.BytesIO()
+#     buffer = BytesIO()
 #     p = canvas.Canvas(buffer, pagesize=A4)
 #
 #     width, height = A4
