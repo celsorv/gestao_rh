@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "bootstrapform",
+    "django_celery_results",
 
     "apps.empresas",
     "apps.funcionarios",
@@ -45,7 +46,6 @@ INSTALLED_APPS = [
     "apps.documentos",
     "apps.registro_hora_extra",
     "apps.core",
-
 ]
 
 MIDDLEWARE = [
@@ -137,6 +137,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 LOGIN_REDIRECT_URL = "home"    # rota home em core/urls.py
 LOGOUT_REDIRECT_URL = "login"  # volta à tela de login
+
+# Diz ao Celery onde guardar o resultado da execução das tasks
+CELERY_RESULT_BACKEND = "django-db"
+
+
+# Uso de Redis
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_SERIALIZER = "json"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
