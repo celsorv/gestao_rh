@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -26,7 +30,6 @@ SECRET_KEY = "django-insecure-m(-6&dj$$+8y00zcqljfj8wcp=vs!47*(norcm69+*35@gr1q-
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -78,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "gestao_rh.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -88,7 +90,6 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -108,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -120,14 +120,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
 
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, "staticfiles"),
+    os.path.join(BASE_DIR, "staticfiles"),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -135,18 +134,27 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-LOGIN_REDIRECT_URL = "home"    # rota home em core/urls.py
+LOGIN_REDIRECT_URL = "home"  # rota home em core/urls.py
 LOGOUT_REDIRECT_URL = "login"  # volta à tela de login
 
 # Diz ao Celery onde guardar o resultado da execução das tasks
 CELERY_RESULT_BACKEND = "django-db"
-
 
 # Uso de Redis
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
+
+# Configurações obtidas do arquivo .env para envio de e-mail
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_USE_TLS = (env("EMAIL_USE_TLS") == "True")
+EMAIL_USE_SSL = (env("EMAIL_USE_SSL") == "True")
+EMAIL_TARGET_ADDRESS = env("EMAIL_TARGET_ADDRESS")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

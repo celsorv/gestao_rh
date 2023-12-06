@@ -1,0 +1,17 @@
+.idea
+*.sqlite3
+venv/
+env/
+.env
+.venv
+ENV/
+env.bak/
+venv.bak/
+*.pyc
+gestao_rh/__pycache__/
+/media/
+target/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
